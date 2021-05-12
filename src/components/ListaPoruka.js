@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const ListaPoruka = ({ lista, nickname }) => {
+  useEffect(() => {
+    console.log("ovdje sam");
+    let objDiv = document.getElementById("lista-poruka");
+    console.log(objDiv.scrollHeight);
+    objDiv.scrollTop = objDiv.scrollHeight;
+  });
+
   return (
-    <div>
+    <div className='lista-poruka' id='lista-poruka'>
       {lista.map((poruka, index) => {
         if (poruka.name === nickname) {
           return (

@@ -60,3 +60,7 @@
   border-radius: 5px;
   flex-basis: 10%;
 }
+.lista-poruka {
+  height: 50vw;
+  overflow: auto;
+}

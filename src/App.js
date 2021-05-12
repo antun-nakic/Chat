@@ -5,6 +5,19 @@ import UnosNovePoruke from "./components/UnosNovePoruke.js";
 import Login from "./components/Login.js";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Pusher from "pusher-js";
+
+Pusher.logToConsole = true;
+
+var pusher = new Pusher("42ad0b9050bf33f88f75", {
+  appId: "1201564",
+  key: "42ad0b9050bf33f88f75",
+  secret: "d9df89a4bccb6b5880ef",
+  cluster: "eu",
+  useTLS: true,
+});
+
+var channel = pusher.subscribe("private-general-chat");
 
 const initalData = [
   { name: "Šime", time: "22:00", text: "Dobra večer" },
@@ -19,6 +32,10 @@ export default class App extends Component {
       poruke: [],
       login: false,
     };
+
+    channel.bind("client-nova-poruka", (data) => {
+      this.dispatch({ type: "DODAVANJE_PORUKE", payload: data });
+    });
   }
 
   dispatch = ({ type, payload }) => {
@@ -64,6 +81,7 @@ export default class App extends Component {
               <UnosNovePoruke
                 dispatch={this.dispatch}
                 nickname={this.state.login}
+                kanal={channel}
               />
             </>
           ) : (
