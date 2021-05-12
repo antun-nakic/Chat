@@ -8,10 +8,24 @@
   margin-bottom: 30px;
 }
 
+.poruka-moja {
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
+  margin-bottom: 30px;
+}
+
 .poruka-ime {
   margin-right: 1em;
   border: 1px solid blue;
   color: blue;
+  padding: 10px;
+  border-radius: 15px;
+}
+.poruka-ime-moja {
+  margin-left: 1em;
+  border: 1px solid rgb(46, 134, 19);
+  color: rgb(46, 134, 19);
   padding: 10px;
   border-radius: 15px;
 }
@@ -21,9 +35,17 @@
   padding: 10px;
 }
 .poruka-time {
-  left: 84px;
+  left: 10px;
   position: absolute;
   bottom: -25px;
+}
+.poruka-time-moja {
+  position: absolute;
+  right: 10px;
+  bottom: -25px;
+}
+.poruka-time-text {
+  position: relative;
 }
 .unos-nove-poruke {
   display: flex;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Naslovna from "./components/Naslovna.js";
 import ListaPoruka from "./components/ListaPoruka.js";
 import UnosNovePoruke from "./components/UnosNovePoruke.js";
+import Login from "./components/Login.js";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -16,6 +17,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       poruke: [],
+      login: false,
     };
   }
 
@@ -26,23 +28,17 @@ export default class App extends Component {
           poruke: [...this.state.poruke, ...initalData],
         });
       }
+      case "LOGIRANJE_OSOBE": {
+        return this.setState({
+          login: payload,
+        });
+      }
       case "DODAVANJE_PORUKE": {
         return this.setState({
           poruke: [...this.state.poruke, payload],
         });
       }
     }
-  };
-
-  proslijedi = (novaPoruka) => {
-    let name = "Me";
-    let time = new Date();
-    let formatedTime =
-      String(time.getHours()) + ":" + String(time.getMinutes());
-    this.dispatch({
-      type: "DODAVANJE_PORUKE",
-      payload: { name: name, time: formatedTime, text: novaPoruka },
-    });
   };
 
   componentDidMount() {
@@ -57,10 +53,22 @@ export default class App extends Component {
   render() {
     return (
       <div className='container'>
-        <div className='col-md-10 mx-auto'>
-          <Naslovna />
-          <ListaPoruka lista={this.state.poruke} />
-          <UnosNovePoruke funkcija={this.proslijedi} />
+        <div className='col-md-10 mx-auto' style={{ marginTop: "20px" }}>
+          {this.state.login ? (
+            <>
+              <Naslovna />
+              <ListaPoruka
+                lista={this.state.poruke}
+                nickname={this.state.login}
+              />
+              <UnosNovePoruke
+                dispatch={this.dispatch}
+                nickname={this.state.login}
+              />
+            </>
+          ) : (
+            <Login dispatch={this.dispatch} />
+          )}
         </div>
       </div>
     );
