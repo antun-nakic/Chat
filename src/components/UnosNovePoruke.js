@@ -16,6 +16,7 @@ const UnosNovePoruke = ({ dispatch, nickname, kanal }) => {
       name: nickname,
       time: formatedTime,
       text: uneseno,
+      channel: "general",
     });
   };
 

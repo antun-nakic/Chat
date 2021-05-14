@@ -4,6 +4,8 @@ import ListaPoruka from "./components/ListaPoruka.js";
 import UnosNovePoruke from "./components/UnosNovePoruke.js";
 import Login from "./components/Login.js";
 import ListaSudionika from "./components/ListaSudionika";
+import Logout from "./components/Logout";
+import ListaSoba from "./components/ListaSoba";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Pusher from "pusher-js";
@@ -24,17 +26,29 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      poruke: [],
+      porukeGeneral: [],
+      porukePlavi: [],
+      porukeCrveni: [],
+      porukeZuti: [],
+      porukeZeleni: [],
+      sobe: ["GENERAL", "PLAVI", "CRVENI", "ZUTI", "ZELENI"],
+      trenutnaSoba: "GENERAL",
       logirani: [],
       login: false,
     };
 
     channel.bind("client-nova-poruka", (data) => {
-      this.dispatch({ type: "DODAVANJE_PORUKE", payload: data });
+      let payload = { name: data.name, text: data.text, time: data.time };
+      this.dispatch({ type: `DODAVANJE_PORUKE_${data.channel}`, payload });
     });
     channel.bind("client-login", (data) => {
       if (this.state.logirani.indexOf(data) === -1) {
         this.dispatch({ type: "NOVI_LOGIRANI", payload: data });
+      }
+    });
+    channel.bind("client-logout", (data) => {
+      if (this.state.logirani.indexOf(data) !== -1) {
+        this.dispatch({ type: "IZBACI_LOGIRANOG", payload: data });
       }
     });
   }
@@ -51,9 +65,17 @@ export default class App extends Component {
           logirani: [...this.state.logirani, payload],
         });
       }
-      case "DODAVANJE_PORUKE": {
+      case "IZBACI_LOGIRANOG": {
+        let novoStanje = this.state.logirani.filter(
+          (logiran) => logiran !== payload
+        );
         return this.setState({
-          poruke: [...this.state.poruke, payload],
+          logirani: novoStanje,
+        });
+      }
+      case "DODAVANJE_PORUKE_GENERAL": {
+        return this.setState({
+          porukeGeneral: [...this.state.porukeGeneral, payload],
         });
       }
     }
@@ -66,7 +88,7 @@ export default class App extends Component {
   componentDidUpdate() {
     setTimeout(() => {
       channel.trigger("client-login", this.state.login);
-    }, 10000);
+    }, 500000);
   }
 
   render() {
@@ -78,10 +100,14 @@ export default class App extends Component {
               <Naslovna />
               <div className='sredisnji-dio'>
                 <ListaPoruka
-                  lista={this.state.poruke}
+                  lista={this.state.porukeGeneral}
                   nickname={this.state.login}
                 />
-                <ListaSudionika lista={this.state.logirani} />
+                <div className='sidebar'>
+                  <ListaSudionika lista={this.state.logirani} />
+                  <ListaSoba sobe={this.state.sobe} />
+                  <Logout kanal={channel} nickname={this.state.login} />
+                </div>
               </div>
               <UnosNovePoruke
                 dispatch={this.dispatch}
