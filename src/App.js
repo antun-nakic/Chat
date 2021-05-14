@@ -3,6 +3,7 @@ import Naslovna from "./components/Naslovna.js";
 import ListaPoruka from "./components/ListaPoruka.js";
 import UnosNovePoruke from "./components/UnosNovePoruke.js";
 import Login from "./components/Login.js";
+import ListaSudionika from "./components/ListaSudionika";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Pusher from "pusher-js";
@@ -19,35 +20,35 @@ var pusher = new Pusher("42ad0b9050bf33f88f75", {
 
 var channel = pusher.subscribe("private-general-chat");
 
-const initalData = [
-  { name: "Šime", time: "22:00", text: "Dobra večer" },
-  { name: "Šime", time: "22:01", text: "Kako ste?" },
-  { name: "Šime", time: "22:02", text: "Nadam se da ste dobro" },
-];
-
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       poruke: [],
+      logirani: [],
       login: false,
     };
 
     channel.bind("client-nova-poruka", (data) => {
       this.dispatch({ type: "DODAVANJE_PORUKE", payload: data });
     });
+    channel.bind("client-login", (data) => {
+      if (this.state.logirani.indexOf(data) === -1) {
+        this.dispatch({ type: "NOVI_LOGIRANI", payload: data });
+      }
+    });
   }
 
   dispatch = ({ type, payload }) => {
     switch (type) {
-      case "INICIJALNO_PUNJENJE": {
-        return this.setState({
-          poruke: [...this.state.poruke, ...initalData],
-        });
-      }
       case "LOGIRANJE_OSOBE": {
         return this.setState({
           login: payload,
+        });
+      }
+      case "NOVI_LOGIRANI": {
+        return this.setState({
+          logirani: [...this.state.logirani, payload],
         });
       }
       case "DODAVANJE_PORUKE": {
@@ -59,12 +60,13 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    this.dispatch({ type: "INICIJALNO_PUNJENJE" });
     console.log(this.state);
   }
 
   componentDidUpdate() {
-    console.log(this.state);
+    setTimeout(() => {
+      channel.trigger("client-login", this.state.login);
+    }, 10000);
   }
 
   render() {
@@ -74,10 +76,13 @@ export default class App extends Component {
           {this.state.login ? (
             <>
               <Naslovna />
-              <ListaPoruka
-                lista={this.state.poruke}
-                nickname={this.state.login}
-              />
+              <div className='sredisnji-dio'>
+                <ListaPoruka
+                  lista={this.state.poruke}
+                  nickname={this.state.login}
+                />
+                <ListaSudionika lista={this.state.logirani} />
+              </div>
               <UnosNovePoruke
                 dispatch={this.dispatch}
                 nickname={this.state.login}
@@ -85,7 +90,7 @@ export default class App extends Component {
               />
             </>
           ) : (
-            <Login dispatch={this.dispatch} />
+            <Login dispatch={this.dispatch} kanal={channel} />
           )}
         </div>
       </div>

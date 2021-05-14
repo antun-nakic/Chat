@@ -11,3 +11,5 @@ Koristiti za pokrenuti produkcijsku aplikaciju
 ### `npm update`
 
 Koristiti za instalirati dependencije koji fale
+
+### `ubaciti kodove za svoj API`

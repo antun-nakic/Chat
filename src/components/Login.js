@@ -1,9 +1,10 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
 
-const Login = ({ dispatch }) => {
+const Login = ({ dispatch, kanal }) => {
   const logirajSe = () => {
     let uneseno = document.getElementById("nickname-unos").value;
+    kanal.trigger("client-login", uneseno);
     dispatch({
       type: "LOGIRANJE_OSOBE",
       payload: uneseno,

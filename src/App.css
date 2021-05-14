@@ -60,7 +60,19 @@
   border-radius: 5px;
   flex-basis: 10%;
 }
-.lista-poruka {
+.sredisnji-dio {
   height: 50vw;
+  display: flex;
+  justify-content: space-between;
+}
+.lista-poruka {
+  flex-basis: 75%;
+  flex-grow: 0;
   overflow: auto;
+}
+.lista-sudionika {
+  word-break: break-all;
+  flex-basis: 20%;
+  flex-grow: 0;
+  background-color: rgba(65, 105, 225, 0.623);
 }
