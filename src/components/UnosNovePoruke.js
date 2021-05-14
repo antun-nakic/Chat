@@ -9,14 +9,14 @@ const UnosNovePoruke = ({ dispatch, nickname, kanal }) => {
     let formatedTime =
       String(time.getHours()) + ":" + String(time.getMinutes());
     dispatch({
-      type: "DODAVANJE_PORUKE",
+      type: "DODAVANJE_PORUKE_GENERAL",
       payload: { name: nickname, time: formatedTime, text: uneseno },
     });
     kanal.trigger("client-nova-poruka", {
       name: nickname,
       time: formatedTime,
       text: uneseno,
-      channel: "general",
+      channel: "GENERAL",
     });
   };
 
