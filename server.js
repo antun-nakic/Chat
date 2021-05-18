@@ -20,6 +20,9 @@ app.use(express.static(path.join(__dirname, "build")));
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+app.get("/login", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 app.post("/pusher/auth", (req, res) => {
   const socketId = req.body.socket_id;
   const channel = req.body.channel_name;

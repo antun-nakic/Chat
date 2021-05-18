@@ -9,6 +9,7 @@ import ListaSoba from "./components/ListaSoba";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Pusher from "pusher-js";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 Pusher.logToConsole = true;
 
@@ -95,7 +96,49 @@ export default class App extends Component {
     return (
       <div className='container'>
         <div className='col-md-10 mx-auto' style={{ marginTop: "20px" }}>
-          {this.state.login ? (
+          <Switch>
+            <Route exact path='/'>
+              {this.state.login ? (
+                <>
+                  <Naslovna />
+                  <div className='sredisnji-dio'>
+                    <ListaPoruka
+                      lista={this.state.porukeGeneral}
+                      nickname={this.state.login}
+                    />
+                    <div className='sidebar'>
+                      <ListaSudionika lista={this.state.logirani} />
+                      <ListaSoba sobe={this.state.sobe} />
+                      <Logout kanal={channel} nickname={this.state.login} />
+                    </div>
+                  </div>
+                  <UnosNovePoruke
+                    dispatch={this.dispatch}
+                    nickname={this.state.login}
+                    kanal={channel}
+                  />
+                </>
+              ) : (
+                <Redirect
+                  to={{
+                    pathname: "/login",
+                  }}
+                />
+              )}
+            </Route>
+            <Route path='/login'>
+              {this.state.login ? (
+                <Redirect
+                  to={{
+                    pathname: "/",
+                  }}
+                />
+              ) : (
+                <Login dispatch={this.dispatch} kanal={channel} />
+              )}
+            </Route>
+          </Switch>
+          {/* {this.state.login ? (
             <>
               <Naslovna />
               <div className='sredisnji-dio'>
@@ -117,7 +160,7 @@ export default class App extends Component {
             </>
           ) : (
             <Login dispatch={this.dispatch} kanal={channel} />
-          )}
+          )} */}
         </div>
       </div>
     );

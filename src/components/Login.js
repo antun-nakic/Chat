@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
 
 const Login = ({ dispatch, kanal }) => {
   const logirajSe = () => {
@@ -9,6 +10,7 @@ const Login = ({ dispatch, kanal }) => {
       type: "LOGIRANJE_OSOBE",
       payload: uneseno,
     });
+    return <Redirect to='/' />;
   };
   return (
     <Form style={{ textAlign: "center" }}>
