@@ -7,13 +7,16 @@ const ListaSoba = ({ sobe, dispatch }) => {
       payload: [soba, index],
     });
   };
+  let ind;
   return (
     <div className='lista-soba'>
       <h4>Lista Soba</h4>
       <ul>
         {sobe.map((soba, index) => {
+          if (index > 5) ind = 5;
+          else ind = index;
           return (
-            <li key={index} onClick={() => promijeniSobu(index, soba)}>
+            <li key={index} onClick={() => promijeniSobu(ind, soba)}>
               {soba}
             </li>
           );

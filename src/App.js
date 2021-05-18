@@ -27,17 +27,24 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      porukePrivatne: [],
       porukeGeneral: [],
       porukePlavi: [],
       porukeCrveni: [],
       porukeZuti: [],
       porukeZeleni: [],
-      sobe: ["GENERAL", "PLAVI", "CRVENI", "ZUTI", "ZELENI"],
+      sobe: ["GENERAL", "PLAVI", "CRVENI", "ZUTI", "ZELENI"], //iva
       trenutnaSoba: ["GENERAL", 0],
       logirani: [],
       login: false,
     };
 
+    channel.bind("client-start-private-chat", (data) => {
+      if (data.target === this.state.login) {
+        let payload = data.initiator;
+        this.dispatch({ type: `DODAVANJE_PRIVATNOG_CHATA`, payload });
+      }
+    });
     channel.bind("client-nova-poruka", (data) => {
       let payload = { name: data.name, text: data.text, time: data.time };
       this.dispatch({ type: `DODAVANJE_PORUKE_${data.channel}`, payload });
@@ -77,6 +84,11 @@ export default class App extends Component {
       case "PROMJENA_SOBE": {
         return this.setState({
           trenutnaSoba: payload,
+        });
+      }
+      case "DODAVANJE_PRIVATNOG_CHATA": {
+        return this.setState({
+          sobe: [...this.state.sobe, payload],
         });
       }
       case "DODAVANJE_PORUKE_GENERAL": {
@@ -134,12 +146,18 @@ export default class App extends Component {
                         this.state.porukeCrveni,
                         this.state.porukeZuti,
                         this.state.porukeZeleni,
+                        this.state.porukePrivatne,
                       ]}
                       Soba={this.state.trenutnaSoba}
                       nickname={this.state.login}
                     />
                     <div className='sidebar'>
-                      <ListaSudionika lista={this.state.logirani} />
+                      <ListaSudionika
+                        lista={this.state.logirani}
+                        dispatch={this.dispatch}
+                        nickname={this.state.login}
+                        kanal={channel}
+                      />
                       <ListaSoba
                         sobe={this.state.sobe}
                         dispatch={this.dispatch}
