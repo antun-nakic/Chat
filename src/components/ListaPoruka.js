@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 
-const ListaPoruka = ({ lista, nickname }) => {
+const ListaPoruka = ({ lista, Soba, nickname }) => {
   useEffect(() => {
-    console.log("ovdje sam");
     let objDiv = document.getElementById("lista-poruka");
     console.log(objDiv.scrollHeight);
     objDiv.scrollTop = objDiv.scrollHeight;
@@ -10,7 +9,8 @@ const ListaPoruka = ({ lista, nickname }) => {
 
   return (
     <div className='lista-poruka' id='lista-poruka'>
-      {lista.map((poruka, index) => {
+      <h4>Trenutno ste u sobi: {Soba[0]}</h4>
+      {lista[Soba[1]].map((poruka, index) => {
         if (poruka.name === nickname) {
           return (
             <div key={index} className='poruka-moja'>

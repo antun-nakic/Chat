@@ -1,6 +1,6 @@
 import React from "react";
 
-const UnosNovePoruke = ({ dispatch, nickname, kanal }) => {
+const UnosNovePoruke = ({ dispatch, nickname, kanal, trenutnaSoba }) => {
   const dodajPoruku = () => {
     let uneseno = document.getElementById("unos").value;
     document.getElementById("unos").value = "";
@@ -9,14 +9,14 @@ const UnosNovePoruke = ({ dispatch, nickname, kanal }) => {
     let formatedTime =
       String(time.getHours()) + ":" + String(time.getMinutes());
     dispatch({
-      type: "DODAVANJE_PORUKE_GENERAL",
+      type: `DODAVANJE_PORUKE_${trenutnaSoba[0]}`,
       payload: { name: nickname, time: formatedTime, text: uneseno },
     });
     kanal.trigger("client-nova-poruka", {
       name: nickname,
       time: formatedTime,
       text: uneseno,
-      channel: "GENERAL",
+      channel: trenutnaSoba[0],
     });
   };
 

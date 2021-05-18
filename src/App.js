@@ -33,7 +33,7 @@ export default class App extends Component {
       porukeZuti: [],
       porukeZeleni: [],
       sobe: ["GENERAL", "PLAVI", "CRVENI", "ZUTI", "ZELENI"],
-      trenutnaSoba: "GENERAL",
+      trenutnaSoba: ["GENERAL", 0],
       logirani: [],
       login: false,
     };
@@ -74,9 +74,34 @@ export default class App extends Component {
           logirani: novoStanje,
         });
       }
+      case "PROMJENA_SOBE": {
+        return this.setState({
+          trenutnaSoba: payload,
+        });
+      }
       case "DODAVANJE_PORUKE_GENERAL": {
         return this.setState({
           porukeGeneral: [...this.state.porukeGeneral, payload],
+        });
+      }
+      case "DODAVANJE_PORUKE_PLAVI": {
+        return this.setState({
+          porukePlavi: [...this.state.porukePlavi, payload],
+        });
+      }
+      case "DODAVANJE_PORUKE_CRVENI": {
+        return this.setState({
+          porukeCrveni: [...this.state.porukeCrveni, payload],
+        });
+      }
+      case "DODAVANJE_PORUKE_ZUTI": {
+        return this.setState({
+          porukeZuti: [...this.state.porukeZuti, payload],
+        });
+      }
+      case "DODAVANJE_PORUKE_ZELENI": {
+        return this.setState({
+          porukeZeleni: [...this.state.porukeZeleni, payload],
         });
       }
     }
@@ -103,12 +128,22 @@ export default class App extends Component {
                   <Naslovna />
                   <div className='sredisnji-dio'>
                     <ListaPoruka
-                      lista={this.state.porukeGeneral}
+                      lista={[
+                        this.state.porukeGeneral,
+                        this.state.porukePlavi,
+                        this.state.porukeCrveni,
+                        this.state.porukeZuti,
+                        this.state.porukeZeleni,
+                      ]}
+                      Soba={this.state.trenutnaSoba}
                       nickname={this.state.login}
                     />
                     <div className='sidebar'>
                       <ListaSudionika lista={this.state.logirani} />
-                      <ListaSoba sobe={this.state.sobe} />
+                      <ListaSoba
+                        sobe={this.state.sobe}
+                        dispatch={this.dispatch}
+                      />
                       <Logout kanal={channel} nickname={this.state.login} />
                     </div>
                   </div>
@@ -116,6 +151,7 @@ export default class App extends Component {
                     dispatch={this.dispatch}
                     nickname={this.state.login}
                     kanal={channel}
+                    trenutnaSoba={this.state.trenutnaSoba}
                   />
                 </>
               ) : (
